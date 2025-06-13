@@ -58,7 +58,7 @@ pipeline {
             steps {
                 script {
                     withCredentials ([string (credentialsId: 'dockerhubCred', variable: 'dockerhubCred' ) ]){
-                    sh 'docker login docker.io -u amishajoshi -p ${dockerhubCred)'
+                    sh 'docker login docker.io -u amishajoshi -p ${dockerhubCred}'
                     echo "Push Docker Image to DockerHub : In Progress"
                     sh 'docker push amishajoshi/makemytrip:latest'
                     echo "Push Docker Image to DockerHub : In Progress"
