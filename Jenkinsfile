@@ -96,7 +96,8 @@ pipeline {
                 docker image prune -f
             '''
     echo 'Local Docker Images Cleaned Up Successfully!'
-
+        }
+    }
     post {
         success {
             echo '✅ Build completed successfully.'
