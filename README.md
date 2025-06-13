@@ -1,1 +1,1 @@
-# makemytrip
+This is a travel related application

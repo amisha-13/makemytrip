@@ -4,7 +4,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class flights {
-    @GetMapping("/flights")
-    public String getData() {return "Book your flightssss from Kolkata to Pune at 10% OFF!";}
+public class visa {
+    @GetMapping("/visa")
+
+    public String getData() {return "Book your evisaa via vfs in 30 days from Dev B";}
+
+
 }
