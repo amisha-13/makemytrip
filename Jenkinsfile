@@ -98,10 +98,10 @@ pipeline {
         		        echo "Push Docker Image to Nexus: In Progress"
 
                         // Tag the image
-                        sh "docker tag makemytrip 13.235.75.65:8085/makemytrip:latest"
+                        sh "docker tag makemytrip:latest 13.235.75.65:8085/makemytrip/makemytrip:latest"
 
                         // Push the image
-                        sh "docker push 13.235.75.65:8085/makemytrip:latest"
+                        sh "docker push 13.235.75.65:8085/makemytrip/makemytrip:latest"
 
                         echo "Push Docker Image to Nexus: Completed"
                         }
