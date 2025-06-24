@@ -86,6 +86,29 @@ pipeline {
             }
         }
 
+        stage('Tag and Upload to Nexus') {
+             steps {
+                   script {
+
+                        withCredentials([usernamePassword(credentialsId: 'nexus-docker-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+
+                        // Login to Nexus
+                        sh "docker login http://13.235.75.65:8085/repository/makemytrip/ -u $NEXUS_USER -p ${NEXUS_PASS}"
+
+        		        echo "Push Docker Image to Nexus: In Progress"
+
+                        // Tag the image
+                        sh "docker tag makemytrip 13.235.75.65:8085/makemytrip:latest"
+
+                        // Push the image
+                        sh "docker push 13.235.75.65:8085/makemytrip:latest"
+
+                        echo "Push Docker Image to Nexus: Completed"
+                        }
+                    }
+             }
+        }
+
         stage ('Clean Up Local Docker Images') {
             steps {
                 echo 'Cleaning Up Local Docker Images...'
