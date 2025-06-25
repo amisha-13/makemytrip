@@ -93,15 +93,15 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: 'nexus-docker-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
 
                         // Login to Nexus
-                        sh "docker login http://3.110.188.132:8085/repository/makemytrip/ -u ${NEXUS_USER} -p ${NEXUS_PASS}"
+                        sh "docker login http://3.110.188.132:8085/repository/makemytrip -u admin -p ${NEXUS_PASS}"
 
         		        echo "Push Docker Image to Nexus: In Progress"
 
                         // Tag the image
-                        sh "docker tag makemytrip:latest 3.110.188.132:8085/makemytrip/makemytrip:latest"
+                        sh "docker tag makemytrip 3.110.188.132:8085/makemytrip/makemytrip:latest"
 
                         // Push the image
-                        sh "docker push 13.235.75.65:8085/makemytrip"
+                        sh "docker push 3.110.188.132:8085/makemytrip"
 
                         echo "Push Docker Image to Nexus: Completed"
                         }
