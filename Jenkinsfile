@@ -93,7 +93,7 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: 'nexus-docker-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
 
                         // Login to Nexus
-                        sh "docker login http://3.110.188.132:8085/repository/makemytrip/ -u admin -p ${NEXUS_PASS}"
+                        sh "docker login http://3.110.188.132:8085/makemytrip/ -u admin -p ${NEXUS_PASS}"
 
         		        echo "Push Docker Image to Nexus: In Progress"
 
