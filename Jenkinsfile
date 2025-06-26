@@ -97,7 +97,7 @@ pipeline {
                         echo "Push Docker Image to Nexus: In Progress"
 
                         // ✅ Properly tag image with registry and repo name
-                        sh "docker tag makemytrip 13.200.229.30:8085/makemytrip:latest"
+                        sh "docker tag makemytrip makemytrip:latest"
 
                         // ✅ Push the full tag
                         sh "docker push 13.200.229.30:8085/makemytrip:latest"
