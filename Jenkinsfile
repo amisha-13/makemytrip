@@ -109,15 +109,15 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'nexus-docker-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
 
                         // ✅ Correct Docker registry login (no /repository path)
-                        sh "docker login http://13.200.229.30:8085 -u ${NEXUS_USER} -p ${NEXUS_PASS}"
+                        sh "docker login http://35.154.143.211:8085 -u ${NEXUS_USER} -p ${NEXUS_PASS}"
 
                         echo "Push Docker Image to Nexus: In Progress"
 
                         // ✅ Properly tag image with registry and repo name
-                        sh "docker tag makemytrip 13.200.229.30:8085/makemytrip:latest"
+                        sh "docker tag makemytrip 35.154.143.211:8085/makemytrip:latest"
 
                         // ✅ Push the full tag
-                        sh "docker push 13.200.229.30:8085/makemytrip:latest"
+                        sh "docker push 35.154.143.211:8085/makemytrip:latest"
 
                         echo "Push Docker Image to Nexus: Completed"
                     }
@@ -131,7 +131,7 @@ pipeline {
                 sh '''
                     docker rmi amishajoshi/makemytrip:latest || echo "Image not found or already deleted"
                     docker rmi makemytrip:latest || echo "Image not found or already deleted"
-                    docker rmi 13.200.229.30:8085/makemytrip:latest || echo "Image not found or already deleted"
+                    docker rmi 35.154.143.211:8085/makemytrip:latest || echo "Image not found or already deleted"
                     docker rmi 197823316368.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:latest || echo "Image not found or already deleted"
                     docker image prune -f
                 '''
