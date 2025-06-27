@@ -120,10 +120,10 @@ pipeline {
                         echo "Push Docker Image to Nexus: In Progress"
 
                         // ✅ Properly tag image with registry and repo name
-                        sh "docker tag makemytrip ${NEXUS_URL}/makemytrip:latest"
+                        sh "docker tag makemytrip ${NEXUS_URL}/repository/makemytrip/makemytrip:latest"
 
                         // ✅ Push the full tag
-                        sh "docker push ${NEXUS_URL}/makemytrip:latest"
+                        sh "docker push ${NEXUS_URL}/repository/makemytrip/makemytrip:latest"
 
                         echo "Push Docker Image to Nexus: Completed"
                     }
