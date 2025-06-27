@@ -28,6 +28,23 @@ pipeline {
             }
         }
 
+        stage ('SonarQube Code Quality'){
+          environment {
+            scannerHome = tool 'qube'
+          }
+          steps {
+            echo 'Starting Sonarube Code Quality Scan..'
+            withSonarQubeEnv('sonar-server'){
+              sh 'mvn sonar:sonar'
+            }
+            echo 'SonarQube Scan Completed. Checking Quality Gate...'
+            timeout(time: 10,unit: 'MINUTES'){
+              waitForQualityGate abortPipeline: true
+            }
+            echo 'Quality Gate check Completed!'
+          }
+        }
+
         stage('Code Package') {
             steps {
                 echo 'Creating WAR Artifact...'
@@ -97,7 +114,7 @@ pipeline {
                         echo "Push Docker Image to Nexus: In Progress"
 
                         // ✅ Properly tag image with registry and repo name
-                        sh "docker tag makemytrip makemytrip:latest"
+                        sh "docker tag makemytrip 13.200.229.30:8085/makemytrip:latest"
 
                         // ✅ Push the full tag
                         sh "docker push 13.200.229.30:8085/makemytrip:latest"
@@ -114,6 +131,7 @@ pipeline {
                 sh '''
                     docker rmi amishajoshi/makemytrip:latest || echo "Image not found or already deleted"
                     docker rmi makemytrip:latest || echo "Image not found or already deleted"
+                    docker rmi 13.200.229.30:8085/makemytrip:latest || echo "Image not found or already deleted"
                     docker rmi 197823316368.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:latest || echo "Image not found or already deleted"
                     docker image prune -f
                 '''
