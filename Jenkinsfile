@@ -13,7 +13,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "amishajoshi/makemytrip"
-        ECR_REPO = "197823316368.dkr.ecr.ap-south-1.amazonaws.com/makemytrip"
+        ECR_REPO = "197823316368.dkr.ecr.ap-south-1.amazonaws.com"
         NEXUS_URL = "http://35.154.143.211:8085"
     }
 
