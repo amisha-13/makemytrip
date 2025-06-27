@@ -11,6 +11,12 @@ pipeline {
         maven 'mvn_3.9.9'  // Make sure this Maven tool is defined in Jenkins global tools
     }
 
+    environment {
+        DOCKER_IMAGE = "amishajoshi/makemytrip"
+        ECR_REPO = "197823316368.dkr.ecr.ap-south-1.amazonaws.com/makemytrip"
+        NEXUS_URL = "http://35.154.143.211:8085"
+    }
+
     stages {
         stage('Code Compilation') {
             steps {
@@ -57,7 +63,7 @@ pipeline {
         stage ('Building & Tag Docker Image') {
             steps {
                 echo 'Starting Building Docker Image'
-                sh 'docker build -t amishajoshi/makemytrip .'
+                sh 'docker build -t ${DOCKER_IMAGE} .'
                 sh 'docker build -t makemytrip .'
                 echo 'Completed Building Docker Image'
             }
@@ -77,7 +83,7 @@ pipeline {
                     withCredentials ([string (credentialsId: 'dockerhubCred', variable: 'dockerhubCred' ) ]){
                     sh 'docker login docker.io -u amishajoshi -p ${dockerhubCred}'
                     echo "Push Docker Image to DockerHub : In Progress"
-                    sh 'docker push amishajoshi/makemytrip:latest'
+                    sh 'docker push ${DOCKER_IMAGE}:latest'
                     echo "Push Docker Image to DockerHub : In Progress"
                     sh 'whoami'
                     }
@@ -87,15 +93,15 @@ pipeline {
         stage(' Docker Image Push to Amazon ECR') {
             steps {
                 script {
-                    withDockerRegistry([credentialsId: 'ecr:ap-south-1:ecr-credentials', url:"https://197823316368.dkr.ecr.ap-south-1.amazonaws.com"]) {
+                    withDockerRegistry([credentialsId: 'ecr:ap-south-1:ecr-credentials', url:"https://${ECR_REPO}"]) {
                     sh '''
                     echo "List the docker images present in local"
                     docker images
                     echo "Tagging the Docker Image: In Progress"
-                    docker tag makemytrip:latest 197823316368.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:latest
+                    docker tag makemytrip:latest ${ECR_REPO}/makemytrip:latest
                     echo "Tagging the Docker Image: Completed"
                     echo "Push Docker Image to ECR : In Progress"
-                    docker push 197823316368.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:latest
+                    docker push ${ECR_REPO}/makemytrip:latest
                     echo "Push Docker Image to ECR : Completed"
                     '''
                     }
@@ -109,15 +115,15 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'nexus-docker-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
 
                         // ✅ Correct Docker registry login (no /repository path)
-                        sh "docker login http://35.154.143.211:8085 -u ${NEXUS_USER} -p ${NEXUS_PASS}"
+                        sh "docker login ${NEXUS_URL} -u ${NEXUS_USER} -p ${NEXUS_PASS}"
 
                         echo "Push Docker Image to Nexus: In Progress"
 
                         // ✅ Properly tag image with registry and repo name
-                        sh "docker tag makemytrip 35.154.143.211:8085/makemytrip:latest"
+                        sh "docker tag makemytrip ${NEXUS_URL}/makemytrip:latest"
 
                         // ✅ Push the full tag
-                        sh "docker push 35.154.143.211:8085/makemytrip:latest"
+                        sh "docker push ${NEXUS_URL}/makemytrip:latest"
 
                         echo "Push Docker Image to Nexus: Completed"
                     }
@@ -129,10 +135,10 @@ pipeline {
             steps {
                 echo 'Cleaning Up Local Docker Images...'
                 sh '''
-                    docker rmi amishajoshi/makemytrip:latest || echo "Image not found or already deleted"
+                    docker rmi ${DOCKER_IMAGE}:latest || echo "Image not found or already deleted"
                     docker rmi makemytrip:latest || echo "Image not found or already deleted"
-                    docker rmi 35.154.143.211:8085/makemytrip:latest || echo "Image not found or already deleted"
-                    docker rmi 197823316368.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:latest || echo "Image not found or already deleted"
+                    docker rmi ${NEXUS_URL}/makemytrip:latest || echo "Image not found or already deleted"
+                    docker rmi ${ECR_REPO}/makemytrip:latest || echo "Image not found or already deleted"
                     docker image prune -f
                 '''
         echo 'Local Docker Images Cleaned Up Successfully!'
